@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/cubing/fmc-duel/issues"
   },
-  "homepage": "https://github.com/cubing/fmc-duel"
+  "homepage": "https://github.com/cubing/fmc-duel",
+  "devDependencies": {
+    "parcel": "^1.12.3",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "cuble": "^0.9.20"
+  }
 }
