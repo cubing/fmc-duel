@@ -1,0 +1,4 @@
+- FMC duel
+- linear FMC: no undoing moves
+- linear FMC: undoing moves, with time limit
+- "Twicth plays": multiple people controlling votign with multiple cubes
