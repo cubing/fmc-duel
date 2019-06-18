@@ -21,7 +21,9 @@
     "typescript": "^3.5.1"
   },
   "dependencies": {
-    "alg": "^0.9.18",
-    "cuble": "^0.9.20"
+    "alg": "^0.9.23",
+    "cuble": "^0.9.20",
+    "kpuzzle": "^0.9.18",
+    "twisty": "^0.9.23"
   }
 }

@@ -1,8 +1,8 @@
 import {debugKeyboardConnect, connect, BluetoothPuzzle, MoveEvent} from "cuble"
-import {invert, Sequence, BlockMove, algToString, algCubingNetLink} from "alg"
-import {Transformation, SVG, Puzzles, KPuzzle, EquivalentStates} from "kpuzzle"
+import {invert, Sequence, BlockMove, algToString, algCubingNetLink, parse} from "alg"
+import {Transformation, Puzzles, KPuzzle, EquivalentStates} from "kpuzzle"
+import {Twisty, experimentalShowJumpingFlash} from "twisty"
 
-console.log("foo")
 const def = Puzzles["333"];
 
 declare global {
@@ -27,7 +27,7 @@ function isSolution(s: Transformation, a: Sequence): boolean {
   return EquivalentStates(def, puzzle.state, s);
 }
 
-class Player {;
+class Player {
   moveCounter: number;
   sequence: Sequence;
   puzzle: KPuzzle;
@@ -38,10 +38,17 @@ class Player {;
   resetElem: HTMLElement = document.createElement("button");
   counterElem: HTMLElement = document.createElement("counter");
   movesElem: HTMLAnchorElement = document.createElement("a");
+  // TODO: Let `twisty.js` create its elem.
+  twistyElem: HTMLElement = document.createElement("twisty");
 
-  private svg: SVG = new SVG(def);
+  twisty: Twisty;
   bluetoothPuzzles: BluetoothPuzzle[] = [];
   constructor() {
+    experimentalShowJumpingFlash(false);
+    this.twisty = new Twisty(this.twistyElem, {
+      puzzle: def,
+      alg: parse("R4")
+    });
     this.reset();
     this.connectElem.textContent = "BT";
     this.connectElem.addEventListener("click", this.connect.bind(this, false));
@@ -53,9 +60,10 @@ class Player {;
     this.resetElem.addEventListener("click", this.reset.bind(this));
     this.element.appendChild(this.resetElem);
     this.element.appendChild(this.counterElem);
-    this.element.appendChild(this.svg.element);
     this.element.appendChild(this.movesElem);
     this.movesElem.target = "_blank";
+
+    this.element.appendChild(this.twistyElem);
   }
 
   reset() {
@@ -64,7 +72,6 @@ class Player {;
     this.movesElem.textContent = "";
     this.movesElem.href = "";
     this.puzzle = new KPuzzle(def);
-    this.svg.draw(def, this.puzzle.state);
   }
 
   updateMoveCounter(n: number) {
@@ -82,7 +89,7 @@ class Player {;
 
   onmove(moveEvent: MoveEvent) {
     this.puzzle.applyBlockMove(moveEvent.latestMove);
-    this.svg.draw(def, this.puzzle.state);
+    // this.svg.draw(def, this.puzzle.state);
 
     const newNestedUnits = this.sequence.nestedUnits.slice(0);
     const l = newNestedUnits.length;
@@ -104,6 +111,7 @@ class Player {;
       newNestedUnits.push(moveEvent.latestMove);
     }
     this.sequence = new Sequence(newNestedUnits);
+    this.twisty.experimentalSetAlg(this.sequence);
     this.updateMoveCounter(this.sequence.nestedUnits.length);
     this.movesElem.textContent = algToString(this.sequence);
     this.movesElem.href = algCubingNetLink({
@@ -127,6 +135,7 @@ export class FMCDuelApp {
     document.querySelector("#add-player").addEventListener("click", this.addPlayer.bind(this));
 
     this.addPlayer();
+    this.players[0].connect(true);
   }
 
   async addPlayer() {
@@ -135,9 +144,5 @@ export class FMCDuelApp {
     this.playersElem.appendChild(player.element);
 
     this.playersElem.style.gridTemplateColumns = (new Array(Math.ceil(Math.sqrt(this.players.length))).fill("1fr")).join(" ")
-  }
-
-  useKeyboard(use: boolean) {
-    USE_KEYBOARD = use;
   }
 }
