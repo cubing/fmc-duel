@@ -12,10 +12,20 @@ app {
   height: 100%;
 
   display: grid;
-  grid-template-rows: 2em 3fr;
+  grid-template-rows: 4em 2em 3fr;
   gap: 1em;
   padding: 2em;
   box-sizing: border-box;
+
+  font-family: Helvetica;
+}
+
+app .banner {
+  font-weight: bold;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  font-size: 3em;
 }
 
 controls {
