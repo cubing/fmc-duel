@@ -13,6 +13,9 @@ app {
 
   display: grid;
   grid-template-rows: 2em 3fr;
+  gap: 1em;
+  padding: 2em;
+  box-sizing: border-box;
 }
 
 controls {
@@ -21,27 +24,40 @@ controls {
   align-items: center;
 }
 
-players {
+competitors {
   display: grid;
-  height: 100%;
-}
+  gap: 2em;
 
-player {
   width: 100%;
-  height: 100%;
+  overflow: visible;
 }
 
-player button,
-player counter,
-player a {
-  font-size: 2em;
+competitor {
+  width: 100%;
+  overflow: visible;
+  display: grid;
+  grid-template-rows: 2em 1fr;
+  border: 2px solid black;
+}
+
+competitor-control-bar button,
+competitor-control-bar counter,
+competitor-control-bar a {
+  height: 100%;
+  font-size: 1em;
   font-family: sans-serif;
   padding: 0.25em 0.5em;
   box-sizing: border-box;
 }
 
-player a {
+competitor-control-bar a {
   color: black;
+}
+
+twisty {
+  width: 100%;
+  height: 100%;
+  grid-template-columns: subgrid;
 }
 
 svg {

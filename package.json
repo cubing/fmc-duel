@@ -24,6 +24,7 @@
     "alg": "^0.9.23",
     "cuble": "^0.9.20",
     "kpuzzle": "^0.9.18",
+    "resize-observer-polyfill": "^1.5.1",
     "twisty": "^0.9.23"
   }
 }

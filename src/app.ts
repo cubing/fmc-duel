@@ -1,7 +1,12 @@
-import {debugKeyboardConnect, connect, BluetoothPuzzle, MoveEvent} from "cuble"
-import {invert, Sequence, BlockMove, algToString, algCubingNetLink, parse} from "alg"
-import {Transformation, Puzzles, KPuzzle, EquivalentStates} from "kpuzzle"
-import {Twisty, experimentalShowJumpingFlash} from "twisty"
+import ResizeObserver from "resize-observer-polyfill";
+
+(window as any).ResizeObserver = ResizeObserver;
+
+import {debugKeyboardConnect, connect, BluetoothPuzzle, MoveEvent} from "cubing/bluetooth"
+import {invert, Sequence, BlockMove, algToString, algCubingNetLink, parse} from "cubing/alg"
+import {Transformation, Puzzles, KPuzzle, EquivalentStates} from "cubing/kpuzzle"
+import {Twisty, experimentalShowJumpingFlash} from "cubing/twisty"
+import { Cube3DView } from "cubing/dist/cjs/twisty/widget";
 
 const def = Puzzles["333"];
 
@@ -27,12 +32,12 @@ function isSolution(s: Transformation, a: Sequence): boolean {
   return EquivalentStates(def, puzzle.state, s);
 }
 
-class Player {
+class Competitor {
   moveCounter: number;
   sequence: Sequence;
   puzzle: KPuzzle;
 
-  element: HTMLElement = document.createElement("player");
+  element: HTMLElement = document.createElement("competitor");
   connectElem: HTMLElement = document.createElement("button");
   kbElem: HTMLElement = document.createElement("button");
   resetElem: HTMLElement = document.createElement("button");
@@ -47,20 +52,30 @@ class Player {
     experimentalShowJumpingFlash(false);
     this.twisty = new Twisty(this.twistyElem, {
       puzzle: def,
-      alg: parse("R4")
+      alg: parse("R4"),
+      playerConfig: {
+        experimentalShowControls: false,
+        experimentalCube3DViewConfig: {
+          experimentalShowBackView: false
+        }
+      }
     });
     this.reset();
+
+    const competitorControlBar = document.createElement("competitor-control-bar");
+    this.element.appendChild(competitorControlBar);
+
     this.connectElem.textContent = "BT";
     this.connectElem.addEventListener("click", this.connect.bind(this, false));
-    this.element.appendChild(this.connectElem);
+    competitorControlBar.appendChild(this.connectElem);
     this.kbElem.textContent = "KB";
     this.kbElem.addEventListener("click", this.connect.bind(this, true));
-    this.element.appendChild(this.kbElem);
+    competitorControlBar.appendChild(this.kbElem);
     this.resetElem.textContent = "Reset";
     this.resetElem.addEventListener("click", this.reset.bind(this));
-    this.element.appendChild(this.resetElem);
-    this.element.appendChild(this.counterElem);
-    this.element.appendChild(this.movesElem);
+    competitorControlBar.appendChild(this.resetElem);
+    competitorControlBar.appendChild(this.counterElem);
+    competitorControlBar.appendChild(this.movesElem);
     this.movesElem.target = "_blank";
 
     this.element.appendChild(this.twistyElem);
@@ -128,10 +143,10 @@ export class FMCDuelApp {
     numPlayers: 0,
     mode: "ready"
   }
-  players: Player[] = [];
+  players: Competitor[] = [];
   constructor() {
     this.element = document.querySelector("app");
-    this.playersElem = this.element.querySelector("players");
+    this.playersElem = this.element.querySelector("competitors");
     document.querySelector("#add-player").addEventListener("click", this.addPlayer.bind(this));
 
     this.addPlayer();
@@ -139,7 +154,7 @@ export class FMCDuelApp {
   }
 
   async addPlayer() {
-    const player = new Player();
+    const player = new Competitor();
     this.players.push(player);
     this.playersElem.appendChild(player.element);
 
