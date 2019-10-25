@@ -12,18 +12,18 @@ if (isNaN(initialNumCompetitors)) {
   initialNumCompetitors = 2;
 }
 
+let initialTimeLimitSeconds = parseFloat(new URL(location.href).searchParams.get("timeLimit") || "120");
+if (isNaN(initialTimeLimitSeconds)) {
+  initialTimeLimitSeconds = 120;
+}
+const initialTimeLimitMs = initialTimeLimitSeconds * 1000;
+
 const def = Puzzles["333"];
 
 declare global {
   interface Window {
     app: any
   }
-}
-
-type Mode = "ready" | "running" | "done"
-type AppState = {
-  numCompetitors: number
-  mode: Mode
 }
 
 function isSolution(s: Transformation, a: Sequence): boolean {
@@ -40,6 +40,12 @@ class Competitor {
   moveCounter: number;
   sequence: Sequence;
   puzzle: KPuzzle;
+
+  // state
+  msRemaining: number = 0;
+  lastRunningStart: number = 0;
+  timeAtLastRunningStart: number = 0;
+  running: boolean = false;
 
   element: HTMLElement = document.createElement("competitor");
   connectElem: HTMLElement = document.createElement("button");
@@ -64,7 +70,7 @@ class Competitor {
         }
       }
     });
-    this.reset();
+    this.reset(0);
 
     const competitorControlBar = document.createElement("competitor-control-bar");
     this.element.appendChild(competitorControlBar);
@@ -85,12 +91,16 @@ class Competitor {
     this.element.appendChild(this.twistyElem);
   }
 
-  reset() {
+  reset(timeLimitMs: number) {
     this.updateMoveCounter(0);
     this.sequence = new Sequence([]);
     this.movesElem.textContent = "";
     this.movesElem.href = "";
     this.puzzle = new KPuzzle(def);
+
+    this.msRemaining = timeLimitMs;
+    this.running = false;
+    this.twisty.experimentalSetAlg(this.sequence);
   }
 
   updateMoveCounter(n: number) {
@@ -140,24 +150,38 @@ class Competitor {
   }
 }
 
+
+type Phase = "ready" | "scrambling" | "solving";
+type AppState = {
+  currentCompetitor: 0,
+  phase: Phase
+}
+
 export class FMCDuelApp {
   element: HTMLElement;
   competitorsElem: HTMLElement;
   state: AppState = {
-    numCompetitors: 0,
-    mode: "ready"
+    currentCompetitor: 0,
+    phase: "ready"
   }
   competitors: Competitor[] = [];
   constructor() {
     this.element = document.querySelector("app");
     this.competitorsElem = this.element.querySelector("competitors");
     document.querySelector("#add-competitor").addEventListener("click", this.addCompetitor.bind(this));
+    document.querySelector("#reset").addEventListener("click", this.reset.bind(this));
 
     (async () => {
       for (let i = 0; i < initialNumCompetitors; i++) {
         this.addCompetitor();
       }
     })();
+  }
+
+  async reset() {
+    for (const competitor of this.competitors) {
+      competitor.reset(initialTimeLimitMs);
+    }
   }
 
   async addCompetitor(): Promise<Competitor> {

@@ -50,6 +50,11 @@ competitor {
   border: 2px solid black;
 }
 
+controls {
+  display: flex;
+  flex-direction: row;
+}
+
 competitor-control-bar button,
 competitor-control-bar counter,
 competitor-control-bar a {
