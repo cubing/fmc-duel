@@ -64,12 +64,6 @@ competitor-control-bar a {
   color: black;
 }
 
-twisty {
-  width: 100%;
-  height: 100%;
-  grid-template-columns: subgrid;
-}
-
 svg {
   max-height: 70vh;
 }
