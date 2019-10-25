@@ -155,7 +155,7 @@ export class FMCDuelApp {
 
     (async () => {
       for (let i = 0; i < initialNumCompetitors; i++) {
-        this.addCompetitor().then(competitor => competitor.connect(true));
+        this.addCompetitor();
       }
     })();
   }
