@@ -6,7 +6,11 @@ import {debugKeyboardConnect, connect, BluetoothPuzzle, MoveEvent} from "cubing/
 import {invert, Sequence, BlockMove, algToString, algCubingNetLink, parse} from "cubing/alg"
 import {Transformation, Puzzles, KPuzzle, EquivalentStates} from "cubing/kpuzzle"
 import {Twisty, experimentalShowJumpingFlash} from "cubing/twisty"
-import { Cube3DView } from "cubing/dist/cjs/twisty/widget";
+
+let initialNumCompetitors = parseFloat(new URL(location.href).searchParams.get("numCompetitors") || "2");
+if (isNaN(initialNumCompetitors)) {
+  initialNumCompetitors = 2;
+}
 
 const def = Puzzles["333"];
 
@@ -18,7 +22,7 @@ declare global {
 
 type Mode = "ready" | "running" | "done"
 type AppState = {
-  numPlayers: number
+  numCompetitors: number
   mode: Mode
 }
 
@@ -138,26 +142,30 @@ class Competitor {
 
 export class FMCDuelApp {
   element: HTMLElement;
-  playersElem: HTMLElement;
+  competitorsElem: HTMLElement;
   state: AppState = {
-    numPlayers: 0,
+    numCompetitors: 0,
     mode: "ready"
   }
-  players: Competitor[] = [];
+  competitors: Competitor[] = [];
   constructor() {
     this.element = document.querySelector("app");
-    this.playersElem = this.element.querySelector("competitors");
-    document.querySelector("#add-player").addEventListener("click", this.addPlayer.bind(this));
+    this.competitorsElem = this.element.querySelector("competitors");
+    document.querySelector("#add-competitor").addEventListener("click", this.addCompetitor.bind(this));
 
-    this.addPlayer();
-    this.players[0].connect(true);
+    (async () => {
+      for (let i = 0; i < initialNumCompetitors; i++) {
+        this.addCompetitor().then(competitor => competitor.connect(true));
+      }
+    })();
   }
 
-  async addPlayer() {
-    const player = new Competitor();
-    this.players.push(player);
-    this.playersElem.appendChild(player.element);
+  async addCompetitor(): Promise<Competitor> {
+    const competitor = new Competitor();
+    this.competitors.push(competitor);
+    this.competitorsElem.appendChild(competitor.element);
 
-    this.playersElem.style.gridTemplateColumns = (new Array(Math.ceil(Math.sqrt(this.players.length))).fill("1fr")).join(" ")
+    this.competitorsElem.style.gridTemplateColumns = (new Array(Math.ceil(Math.sqrt(this.competitors.length))).fill("1fr")).join(" ")
+    return competitor;
   }
 }
