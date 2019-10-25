@@ -1,7 +1,7 @@
 .PHONY: build
 build:
-	npx parcel build index.html
+	npx parcel build src/index.html
 
 .PHONY: dev
 dev:
-	npx parcel index.html
+	npx parcel src/index.html
