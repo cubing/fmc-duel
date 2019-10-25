@@ -100,7 +100,7 @@ class Competitor {
 
   async connect(keyboard: boolean) {
     console.log("connecting...")
-    const bluetoothPuzzle = await (keyboard ? debugKeyboardConnect() : connect());
+    const bluetoothPuzzle = await (keyboard ? debugKeyboardConnect(this.twisty.experimentalGetPlayer().element) : connect());
     bluetoothPuzzle.addMoveListener(this.onmove.bind(this));
     this.bluetoothPuzzles.push(bluetoothPuzzle);
     console.log("connected!")
