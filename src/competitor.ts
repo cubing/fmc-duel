@@ -91,9 +91,9 @@ export class Competitor {
     this.puzzle = new KPuzzle(def);
 
     this.msRemaining = timeLimitMs;
-    this.displayTime();
     this.status = Status.Inactive;
     this.twisty.experimentalSetAlg(this.sequence);
+    this.displayTime();
   }
 
   public async connect(keyboard: boolean) {
