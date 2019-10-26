@@ -1,3 +1,8 @@
+@font-face {
+  font-family: digital-7-mono;
+  src: url("../vendor/digital-7-mono.ttf") format("truetype");
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -56,10 +61,15 @@ competitor {
   width: 100%;
   overflow: visible;
   display: grid;
-  grid-template-rows: 2em 1fr;
+  grid-template-rows: auto 1fr;
   border: 2px solid black;
 }
 
+competitor-control-bar {
+  display: grid;
+  grid-template-columns: auto auto auto 1fr auto;
+  border-bottom: 1px solid black;
+}
 
 competitor-control-bar button,
 competitor-control-bar counter,
@@ -73,6 +83,28 @@ competitor-control-bar a {
 
 competitor-control-bar a {
   color: black;
+}
+
+competitor-control-bar counter {
+  font-size: 6em;
+  font-family: digital-7-mono;
+  border-right: 1px solid black;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+competitor-control-bar time {
+  font-size: 6em;
+  font-family: digital-7-mono;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  padding: 0.215em 0em 0.1em;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+twisty player {
+  background: none !important;
+  background-image: none !important;
 }
 
 svg {

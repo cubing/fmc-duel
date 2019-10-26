@@ -32,10 +32,9 @@ export class Competitor {
   element: HTMLElement = document.createElement("competitor");
   connectElem: HTMLElement = document.createElement("button");
   kbElem: HTMLElement = document.createElement("button");
-  resetElem: HTMLElement = document.createElement("button");
   counterElem: HTMLElement = document.createElement("counter");
-  timeElem: HTMLElement = document.createElement("span");
-  movesElem: HTMLAnchorElement = document.createElement("a");
+  timeElem: HTMLElement = document.createElement("time");
+  // movesElem: HTMLAnchorElement = document.createElement("a");
   // TODO: Let `twisty.js` create its elem.
   twistyElem: HTMLElement = document.createElement("twisty");
 
@@ -68,16 +67,10 @@ export class Competitor {
     this.kbElem.addEventListener("click", this.connect.bind(this, true));
     competitorControlBar.appendChild(this.kbElem);
 
-    this.resetElem.textContent = "Reset";
-    this.resetElem.addEventListener("click", this.reset.bind(this));
-    competitorControlBar.appendChild(this.resetElem);
-
     this.timeElem.textContent = "0:00.0";
 
     competitorControlBar.appendChild(this.counterElem);
     competitorControlBar.appendChild(this.timeElem);
-    competitorControlBar.appendChild(this.movesElem);
-    this.movesElem.target = "_blank";
 
     this.element.appendChild(this.twistyElem);
   }
@@ -86,8 +79,6 @@ export class Competitor {
     console.log("reset");
     this.updateMoveCounter(0);
     this.sequence = new Sequence([]);
-    this.movesElem.textContent = "";
-    this.movesElem.href = "";
     this.puzzle = new KPuzzle(def);
 
     this.msRemaining = timeLimitMs;
