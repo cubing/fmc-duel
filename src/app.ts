@@ -175,7 +175,7 @@ export class FMCDuelApp {
   async addCompetitor(): Promise<Competitor> {
     const idx = this.competitors.length;
     const turnDoneKey = useDifferentKeys ? `Digit${idx + 1}` : "Space";
-    const competitor = new Competitor(this, idx, turnDoneKey);
+    const competitor = new Competitor(this, idx, turnDoneKey, initialTimeLimitMs);
     this.competitors.push(competitor);
     await competitor.connect(debug);
 

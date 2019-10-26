@@ -44,7 +44,7 @@ export class Competitor {
   private turnDoneHandler = this.turnDone.bind(this);
   currentMove: BlockMove | null = null;
 
-  constructor(private app: FMCDuelApp, private idx: number, private turnDoneKey: string) {
+  constructor(private app: FMCDuelApp, private idx: number, private turnDoneKey: string, initialTimeLimitMs: number) {
     experimentalShowJumpingFlash(false);
     this.twisty = new Twisty(this.twistyElem, {
       puzzle: def,
@@ -56,20 +56,11 @@ export class Competitor {
         }
       }
     });
-    this.reset(0);
+    this.reset(initialTimeLimitMs);
 
     const competitorControlBar = document.createElement("competitor-control-bar");
     this.element.appendChild(competitorControlBar);
-
-    // this.connectElem.textContent = "BT";
-    // this.connectElem.addEventListener("click", this.connect.bind(this, false));
-    // competitorControlBar.appendChild(this.connectElem);
-
-    // this.kbElem.textContent = "KB";
-    // this.kbElem.addEventListener("click", this.connect.bind(this, true));
-    // competitorControlBar.appendChild(this.kbElem);
-
-    this.timeElem.textContent = "0:00.0";
+    this.displayTime();
 
     competitorControlBar.appendChild(this.counterElem);
     competitorControlBar.appendChild(this.timeElem);
