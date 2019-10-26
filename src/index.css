@@ -62,7 +62,34 @@ competitor {
   overflow: visible;
   display: grid;
   grid-template-rows: auto 1fr;
-  border: 2px solid black;
+  border: 2px solid rgba(0, 0, 0, 1);
+}
+
+competitor.scrambling time {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+competitor.beingScrambled twisty {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+competitor.takingTurn {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+competitor.won {
+  background: rgba(128, 220, 128);
+  border: 2px solid green;
+}
+
+competitor.lost {
+  background: rgb(255, 192, 192);
+  border: 2px solid red;
+}
+
+competitor.tied {
+  background: rgb(255, 223, 158);
+  border: 2px dashed rgb(255, 192, 0);
 }
 
 competitor-control-bar {
@@ -89,7 +116,7 @@ competitor-control-bar counter {
   font-size: 6em;
   font-family: digital-7-mono;
   border-right: 1px solid black;
-  background: rgba(255, 255, 255, 0.4);
+  /* background: rgba(255, 255, 255, 0.4); */
 }
 
 competitor-control-bar time {
@@ -99,7 +126,7 @@ competitor-control-bar time {
   align-items: center;
   justify-content: center;
   padding: 0.215em 0em 0.1em;
-  background: rgba(255, 255, 255, 0.4);
+  /* background: rgba(255, 255, 255, 0.4); */
 }
 
 twisty player {

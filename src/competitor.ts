@@ -2,7 +2,7 @@ import { Sequence, parse, BlockMove, algToString, algCubingNetLink } from "cubin
 import { Twisty } from "cubing/twisty";
 import { BluetoothPuzzle, connect, debugKeyboardConnect, MoveEvent } from "cubing/bluetooth";
 import { experimentalShowJumpingFlash } from "cubing/twisty";
-import { Puzzles, KPuzzle } from "cubing/kpuzzle";
+import { Puzzles, KPuzzle, EquivalentStates, Transformation } from "cubing/kpuzzle";
 import { formatTime } from "./stats";
 
 const def = Puzzles["333"];
@@ -83,7 +83,7 @@ export class Competitor {
     this.puzzle = new KPuzzle(def);
 
     this.msRemaining = timeLimitMs;
-    this.status = Status.Inactive;
+    this.setStatus(Status.Inactive);
     this.twisty.experimentalSetAlg(this.sequence);
     this.displayTime();
   }
@@ -104,7 +104,7 @@ export class Competitor {
       case Status.TakingTurn:
       case Status.Waiting:
         this.stopTimer();
-        this.status = Status.Waiting;
+        this.setStatus(Status.Waiting);
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -117,7 +117,7 @@ export class Competitor {
       case Status.BeingScrambled:
       case Status.Waiting:
         this.startTimer();
-        this.status = Status.Scrambling;
+        this.setStatus(Status.Scrambling);
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -129,7 +129,7 @@ export class Competitor {
       case Status.Inactive:
       case Status.Waiting:
       case Status.Scrambling:
-        this.status = Status.BeingScrambled;
+        this.setStatus(Status.BeingScrambled);
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -142,7 +142,7 @@ export class Competitor {
       case Status.Scrambling:
       case Status.BeingScrambled:
         this.startTimer();
-        this.status = Status.TakingTurn;
+        this.setStatus(Status.TakingTurn);
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -154,7 +154,7 @@ export class Competitor {
       case Status.TakingTurn:
       case Status.Waiting:
         this.stopTimer();
-        this.status = Status.Won;
+        this.setStatus(Status.Won);
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -166,7 +166,7 @@ export class Competitor {
       case Status.TakingTurn:
       case Status.Waiting:
         this.stopTimer();
-        this.status = Status.Lost;
+        this.setStatus(Status.Lost);
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -180,11 +180,17 @@ export class Competitor {
       case Status.BeingScrambled:
       case Status.TakingTurn:
         this.stopTimer();
-        this.status = Status.Tied;
+        this.setStatus(Status.Tied);
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
     }
+  }
+
+  private setStatus(status: Status): void {
+    this.status = status;
+    this.element.setAttribute("class", ""); // TODO: Leave unknown classes untouched.
+    this.element.classList.add(status);
   }
 
   private updateMoveCounter(n: number) {
@@ -198,7 +204,7 @@ export class Competitor {
       switch (this.status) {
         case Status.Scrambling:
         case Status.TakingTurn:
-          // this.status = Status.Waiting
+          this.setStatus(Status.Waiting);
           console.log("removing listener", this.turnDoneKey)
           window.removeEventListener("keyup", this.turnDoneHandler);
           this.currentMove = null;
@@ -211,7 +217,7 @@ export class Competitor {
   }
 
   private listenForTurnDone(): void {
-    console.log("listening", this.turnDoneKey);
+    console.log("listening", this.msRemaining, this.turnDoneKey);
     window.addEventListener("keyup", this.turnDoneHandler)
   }
 
@@ -242,7 +248,7 @@ export class Competitor {
         this.msRemaining = this.msRemainingAtLastRunningStart - (currentTime - this.lastRunningStart);
         if (this.msRemaining <= 0) {
           this.msRemaining = 0;
-          this.status = Status.Lost;
+          this.setStatus(Status.Lost);
         }
         this.displayTime();
         break;
@@ -290,6 +296,15 @@ export class Competitor {
     this.counterElem.textContent = this.moveCounter.toString();
   }
 
+  private isSolved(): boolean {
+    const state: Transformation = this.puzzle.state;
+    // TODO: Implement a proper comparison that ignores center orientation.
+    for (var i = 0; i < 6; i++) {
+      state["CENTER"].orientation[i] = 0;
+    }
+    return EquivalentStates(Puzzles["333"], state, Puzzles["333"].startPieces);
+  }
+
   private onMove(moveEvent: MoveEvent) {
     this.puzzle.applyBlockMove(moveEvent.latestMove);
     this.twisty.experimentalAddMove(moveEvent.latestMove);
@@ -306,6 +321,9 @@ export class Competitor {
           if (this.currentMove.family !== moveEvent.latestMove.family) {
             this.setLost();
           }
+        }
+        if (this.isSolved()) {
+          this.setWon();
         }
         break;
       case Status.Waiting:
