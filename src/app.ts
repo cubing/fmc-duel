@@ -6,7 +6,7 @@ import { Competitor, Status } from "./competitor";
 
 let debug: boolean = new URL(location.href).searchParams.get("debug") === "true";
 
-let initialNumCompetitors = parseFloat(new URL(location.href).searchParams.get("numCompetitors") || "2");
+let initialNumCompetitors = parseFloat(new URL(location.href).searchParams.get("numCompetitors"));
 if (isNaN(initialNumCompetitors)) {
   initialNumCompetitors = debug ? 2 : 0;
 }
@@ -45,6 +45,7 @@ export class FMCDuelApp {
     document.querySelector("#reset").addEventListener("click", this.reset.bind(this));
     document.querySelector("#start").addEventListener("click", this.startRound.bind(this));
 
+    console.log(initialNumCompetitors);
     (async () => {
       for (let i = 0; i < initialNumCompetitors; i++) {
         this.addCompetitor();

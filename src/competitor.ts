@@ -19,7 +19,7 @@ export enum Status {
 }
 
 export class Competitor {
-  moveCounter: number;
+  moveCounter: number = 0;
   sequence: Sequence;
   puzzle: KPuzzle;
 
@@ -186,7 +186,7 @@ export class Competitor {
     }
   }
 
-  public updateMoveCounter(n: number) {
+  private updateMoveCounter(n: number) {
     this.moveCounter = n;
     this.counterElem.textContent = this.moveCounter.toString();
   }
@@ -265,13 +265,14 @@ export class Competitor {
 
   private stopTimer(): void {
     switch (this.status) {
-      case Status.Inactive:
-      case Status.BeingScrambled:
-      case Status.Scrambling:
-      case Status.TakingTurn:
-      case Status.Lost:
       case Status.Waiting:
+      case Status.Scrambling:
+      case Status.BeingScrambled:
+      case Status.TakingTurn:
         this.updateTime();
+        break;
+      case Status.Inactive:
+      case Status.Lost:
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -279,7 +280,7 @@ export class Competitor {
   }
 
   private incrementMoveCounter(): void {
-    this.moveCounter++;
+    this.updateMoveCounter(this.moveCounter + 1);
     this.displayMoveCounter();
   }
 
@@ -295,6 +296,7 @@ export class Competitor {
       case Status.BeingScrambled:
         break;
       case Status.TakingTurn:
+        this.incrementMoveCounter();
         this.turnDoneCallback();
         break;
       case Status.Waiting:
