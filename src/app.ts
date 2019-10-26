@@ -141,7 +141,7 @@ export class FMCDuelApp {
   }
 
   async addCompetitor(): Promise<Competitor> {
-    const competitor = new Competitor(`Digit${this.competitors.length + 1}`, this.turnDone.bind(this, this.competitors.length));
+    const competitor = new Competitor("Space", this.turnDone.bind(this, this.competitors.length));
     this.competitors.push(competitor);
     this.competitorsElem.appendChild(competitor.element);
 

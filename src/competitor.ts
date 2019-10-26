@@ -207,7 +207,7 @@ export class Competitor {
         case Status.TakingTurn:
           // this.status = Status.Waiting
           console.log("removing listener", this.turnDoneKey)
-          window.removeEventListener("keydown", this.turnDoneHandler);
+          window.removeEventListener("keyup", this.turnDoneHandler);
           this.turnDoneCallback();
           break;
         // default:
@@ -218,7 +218,7 @@ export class Competitor {
 
   private listenForTurnDone(): void {
     console.log("listening", this.turnDoneKey);
-    window.addEventListener("keydown", this.turnDoneHandler)
+    window.addEventListener("keyup", this.turnDoneHandler)
   }
 
   private startTimer(): void {
