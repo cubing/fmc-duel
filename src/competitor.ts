@@ -3,6 +3,7 @@ import { Twisty } from "cubing/twisty";
 import { BluetoothPuzzle, connect, debugKeyboardConnect, MoveEvent } from "cubing/bluetooth";
 import { experimentalShowJumpingFlash } from "cubing/twisty";
 import { Puzzles, KPuzzle } from "cubing/kpuzzle";
+import { formatTime } from "./stats";
 
 const def = Puzzles["333"];
 
@@ -71,7 +72,7 @@ export class Competitor {
     this.resetElem.addEventListener("click", this.reset.bind(this));
     competitorControlBar.appendChild(this.resetElem);
 
-    this.timeElem.textContent = "0:00";
+    this.timeElem.textContent = "0:00.0";
 
     competitorControlBar.appendChild(this.counterElem);
     competitorControlBar.appendChild(this.timeElem);
@@ -264,7 +265,7 @@ export class Competitor {
       case Status.Scrambling:
       case Status.TakingTurn:
       case Status.Lost:
-        this.timeElem.textContent = `${this.msRemaining}`;
+        this.timeElem.textContent = formatTime(this.msRemaining);
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
