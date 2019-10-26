@@ -145,10 +145,10 @@ export class FMCDuelApp {
   }
 
   async addCompetitor(): Promise<Competitor> {
-    const competitor = new Competitor("Space", this.turnDone.bind(this, this.competitors.length));
+    const competitor = new Competitor(`Digit${this.competitors.length + 1}`, this.turnDone.bind(this, this.competitors.length));
+    this.competitors.push(competitor);
     await competitor.connect(debug);
 
-    this.competitors.push(competitor);
     this.competitorsElem.appendChild(competitor.element);
 
     this.competitorsElem.style.gridTemplateColumns = (new Array(Math.ceil(Math.sqrt(this.competitors.length))).fill("1fr")).join(" ")

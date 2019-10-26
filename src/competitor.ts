@@ -244,6 +244,7 @@ export class Competitor {
     switch (this.status) {
       case Status.Scrambling:
       case Status.TakingTurn:
+      case Status.Waiting:
         const currentTime = Date.now();
         this.msRemaining = this.msRemainingAtLastRunningStart - (currentTime - this.lastRunningStart);
         if (this.msRemaining <= 0) {
@@ -264,6 +265,7 @@ export class Competitor {
       case Status.Scrambling:
       case Status.TakingTurn:
       case Status.Lost:
+      case Status.Waiting:
         this.timeElem.textContent = formatTime(this.msRemaining);
         break;
       default:
