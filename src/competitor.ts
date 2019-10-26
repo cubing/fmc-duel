@@ -13,7 +13,8 @@ export enum Status {
   Waiting = "waiting",
   TakingTurn = "takingTurn",
   Won = "won",
-  Lost = "lost"
+  Lost = "lost",
+  Tied = "tied"
 }
 
 export class Competitor {
@@ -108,6 +109,7 @@ export class Competitor {
       case Status.BeingScrambled:
       case Status.Scrambling:
       case Status.TakingTurn:
+      case Status.Waiting:
         this.stopTimer();
         this.status = Status.Waiting;
         break;
@@ -172,6 +174,20 @@ export class Competitor {
       case Status.Waiting:
         this.stopTimer();
         this.status = Status.Lost;
+        break;
+      default:
+        throw new Error(`Unexpected status! ${this.status}`);
+    }
+  }
+
+  public setTied(): void {
+    switch (this.status) {
+      case Status.Waiting:
+      case Status.Scrambling:
+      case Status.BeingScrambled:
+      case Status.TakingTurn:
+        this.stopTimer();
+        this.status = Status.Tied;
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -262,6 +278,7 @@ export class Competitor {
       case Status.Scrambling:
       case Status.TakingTurn:
       case Status.Lost:
+      case Status.Waiting:
         this.updateTime();
         break;
       default:
@@ -271,36 +288,55 @@ export class Competitor {
 
   private onMove(moveEvent: MoveEvent) {
     this.puzzle.applyBlockMove(moveEvent.latestMove);
-    // this.svg.draw(def, this.puzzle.state);
-
-    const newNestedUnits = this.sequence.nestedUnits.slice(0);
-    const l = newNestedUnits.length;
-    if (l > 0) {
-      const move = newNestedUnits[l - 1] as BlockMove;
-      // TODO: Check slices?
-      if (move.family === moveEvent.latestMove.family && Math.sign(move.amount) === Math.sign(moveEvent.latestMove.amount)) {
-        newNestedUnits.splice(-1);
-        newNestedUnits.push(new BlockMove(
-          move.outerLayer,
-          move.innerLayer,
-          move.family,
-          move.amount + moveEvent.latestMove.amount
-        ));
-      } else {
-        newNestedUnits.push(moveEvent.latestMove);
-      }
-    } else {
-      newNestedUnits.push(moveEvent.latestMove);
+    this.twisty.experimentalAddMove(moveEvent.latestMove);
+    switch (this.status) {
+      case Status.Inactive: // TODO
+      case Status.BeingScrambled:
+        break;
+      case Status.TakingTurn:
+        this.turnDoneCallback();
+        break;
+      case Status.Waiting:
+        this.setLost();
+        break;
+      case Status.Scrambling:
+        this.setTied();
+        break;
+      default:
+        console.error(new Error(`Unexpected status! ${this.status}`));
     }
-    this.sequence = new Sequence(newNestedUnits);
-    this.twisty.experimentalSetAlg(this.sequence);
-    this.updateMoveCounter(this.sequence.nestedUnits.length);
-    this.movesElem.textContent = algToString(this.sequence);
-    this.movesElem.href = algCubingNetLink({
-      alg: this.sequence,
-      title: "FMC Duel Test\n" + new Date().toString()
-    })
-  }
+
+  //   this.puzzle.applyBlockMove(moveEvent.latestMove);
+  //   // this.svg.draw(def, this.puzzle.state);
+
+  //   const newNestedUnits = this.sequence.nestedUnits.slice(0);
+  //   const l = newNestedUnits.length;
+  //   if (l > 0) {
+  //     const move = newNestedUnits[l - 1] as BlockMove;
+  //     // TODO: Check slices?
+  //     if (move.family === moveEvent.latestMove.family && Math.sign(move.amount) === Math.sign(moveEvent.latestMove.amount)) {
+  //       newNestedUnits.splice(-1);
+  //       newNestedUnits.push(new BlockMove(
+  //         move.outerLayer,
+  //         move.innerLayer,
+  //         move.family,
+  //         move.amount + moveEvent.latestMove.amount
+  //       ));
+  //     } else {
+  //       newNestedUnits.push(moveEvent.latestMove);
+  //     }
+  //   } else {
+  //     newNestedUnits.push(moveEvent.latestMove);
+  //   }
+  //   this.sequence = new Sequence(newNestedUnits);
+  //   this.twisty.experimentalSetAlg(this.sequence);
+  //   this.updateMoveCounter(this.sequence.nestedUnits.length);
+  //   this.movesElem.textContent = algToString(this.sequence);
+  //   this.movesElem.href = algCubingNetLink({
+  //     alg: this.sequence,
+  //     title: "FMC Duel Test\n" + new Date().toString()
+  //   })
+  // }
 }
 
 // function isSolution(s: Transformation, a: Sequence): boolean {
