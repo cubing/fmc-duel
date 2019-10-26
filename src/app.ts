@@ -5,6 +5,7 @@ import ResizeObserver from "resize-observer-polyfill";
 import { Competitor, Status } from "./competitor";
 
 let debug: boolean = new URL(location.href).searchParams.get("debug") === "true";
+let useDifferentKeys: boolean = new URL(location.href).searchParams.get("userDifferentKeys") === "true";
 
 let initialNumCompetitors = parseFloat(new URL(location.href).searchParams.get("numCompetitors"));
 if (isNaN(initialNumCompetitors)) {
@@ -98,7 +99,7 @@ export class FMCDuelApp {
     requestAnimationFrame(this.animFrame.bind(this));
   }
 
-  turnDone(competitorIdx: number): void {
+  public turnDone(competitorIdx: number): void {
     if (this.currentCompetitorIdx !== competitorIdx) {
       console.log("Unexpected competitor index:", competitorIdx);
       return;
@@ -145,7 +146,9 @@ export class FMCDuelApp {
   }
 
   async addCompetitor(): Promise<Competitor> {
-    const competitor = new Competitor(`Digit${this.competitors.length + 1}`, this.turnDone.bind(this, this.competitors.length));
+    const idx = this.competitors.length;
+    const turnDoneKey = useDifferentKeys ? `Digit${idx + 1}` : "Space";
+    const competitor = new Competitor(this, idx, turnDoneKey);
     this.competitors.push(competitor);
     await competitor.connect(debug);
 

@@ -4,6 +4,7 @@ import { BluetoothPuzzle, connect, debugKeyboardConnect, MoveEvent } from "cubin
 import { experimentalShowJumpingFlash } from "cubing/twisty";
 import { Puzzles, KPuzzle, EquivalentStates, Transformation } from "cubing/kpuzzle";
 import { formatTime } from "./stats";
+import { FMCDuelApp } from "./app";
 
 const def = Puzzles["333"];
 
@@ -43,11 +44,11 @@ export class Competitor {
   private turnDoneHandler = this.turnDone.bind(this);
   currentMove: BlockMove | null = null;
 
-  constructor(private turnDoneKey: string, private turnDoneCallback: () => void) {
+  constructor(private app: FMCDuelApp, private idx: number, private turnDoneKey: string) {
     experimentalShowJumpingFlash(false);
     this.twisty = new Twisty(this.twistyElem, {
       puzzle: def,
-      alg: parse("R4"),
+      alg: parse(""),
       playerConfig: {
         experimentalShowControls: false,
         experimentalCube3DViewConfig: {
@@ -208,7 +209,7 @@ export class Competitor {
           console.log("removing listener", this.turnDoneKey)
           window.removeEventListener("keyup", this.turnDoneHandler);
           this.currentMove = null;
-          this.turnDoneCallback();
+          this.app.turnDone(this.idx);
           break;
         // default:
         //   throw new Error(`Unexpected status! ${this.status}`);
@@ -337,38 +338,7 @@ export class Competitor {
       default:
         console.error(new Error(`Unexpected status! ${this.status}`));
     }
-
-  //   this.puzzle.applyBlockMove(moveEvent.latestMove);
-  //   // this.svg.draw(def, this.puzzle.state);
-
-  //   const newNestedUnits = this.sequence.nestedUnits.slice(0);
-  //   const l = newNestedUnits.length;
-  //   if (l > 0) {
-  //     const move = newNestedUnits[l - 1] as BlockMove;
-  //     // TODO: Check slices?
-  //     if (move.family === moveEvent.latestMove.family && Math.sign(move.amount) === Math.sign(moveEvent.latestMove.amount)) {
-  //       newNestedUnits.splice(-1);
-  //       newNestedUnits.push(new BlockMove(
-  //         move.outerLayer,
-  //         move.innerLayer,
-  //         move.family,
-  //         move.amount + moveEvent.latestMove.amount
-  //       ));
-  //     } else {
-  //       newNestedUnits.push(moveEvent.latestMove);
-  //     }
-  //   } else {
-  //     newNestedUnits.push(moveEvent.latestMove);
-  //   }
-  //   this.sequence = new Sequence(newNestedUnits);
-  //   this.twisty.experimentalSetAlg(this.sequence);
-  //   this.updateMoveCounter(this.sequence.nestedUnits.length);
-  //   this.movesElem.textContent = algToString(this.sequence);
-  //   this.movesElem.href = algCubingNetLink({
-  //     alg: this.sequence,
-  //     title: "FMC Duel Test\n" + new Date().toString()
-  //   })
-  // }
+  }
 }
 
 // function isSolution(s: Transformation, a: Sequence): boolean {
