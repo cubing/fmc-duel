@@ -244,6 +244,7 @@ export class Competitor {
       case Status.Scrambling:
       case Status.TakingTurn:
       case Status.Waiting:
+      case Status.BeingScrambled:
         const currentTime = Date.now();
         this.msRemaining = this.msRemainingAtLastRunningStart - (currentTime - this.lastRunningStart);
         if (this.msRemaining <= 0) {
@@ -312,6 +313,9 @@ export class Competitor {
     switch (this.status) {
       case Status.Inactive: // TODO
       case Status.BeingScrambled:
+      case Status.Won:
+      case Status.Lost:
+      case Status.Tied:
         break;
       case Status.TakingTurn:
         if (this.currentMove === null) {
