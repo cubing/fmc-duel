@@ -1,10 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
-}
-
-* {
-  background: rgba(0, 0, 0, 0.1);
+  background: #ACE
 }
 
 app {
@@ -12,7 +9,7 @@ app {
   height: 100%;
 
   display: grid;
-  grid-template-rows: 4em 2em 3fr;
+  grid-template-rows: auto auto 3fr;
   gap: 1em;
   padding: 2em;
   box-sizing: border-box;
@@ -30,8 +27,21 @@ app .banner {
 
 controls {
   display: grid;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-around;
+  align-items: space-around;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1em;
+}
+
+controls button {
+  font-size: 2em;
+  background: none;
+  border: none;
+}
+
+controls button:hover {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.25)
 }
 
 competitors {
@@ -50,10 +60,6 @@ competitor {
   border: 2px solid black;
 }
 
-controls {
-  display: flex;
-  flex-direction: row;
-}
 
 competitor-control-bar button,
 competitor-control-bar counter,
