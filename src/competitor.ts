@@ -59,13 +59,13 @@ export class Competitor {
     const competitorControlBar = document.createElement("competitor-control-bar");
     this.element.appendChild(competitorControlBar);
 
-    this.connectElem.textContent = "BT";
-    this.connectElem.addEventListener("click", this.connect.bind(this, false));
-    competitorControlBar.appendChild(this.connectElem);
+    // this.connectElem.textContent = "BT";
+    // this.connectElem.addEventListener("click", this.connect.bind(this, false));
+    // competitorControlBar.appendChild(this.connectElem);
 
-    this.kbElem.textContent = "KB";
-    this.kbElem.addEventListener("click", this.connect.bind(this, true));
-    competitorControlBar.appendChild(this.kbElem);
+    // this.kbElem.textContent = "KB";
+    // this.kbElem.addEventListener("click", this.connect.bind(this, true));
+    // competitorControlBar.appendChild(this.kbElem);
 
     this.timeElem.textContent = "0:00.0";
 
@@ -276,6 +276,15 @@ export class Competitor {
       default:
         throw new Error(`Unexpected status! ${this.status}`);
     }
+  }
+
+  private incrementMoveCounter(): void {
+    this.moveCounter++;
+    this.displayMoveCounter();
+  }
+
+  private displayMoveCounter(): void {
+    this.counterElem.textContent = this.moveCounter.toString();
   }
 
   private onMove(moveEvent: MoveEvent) {

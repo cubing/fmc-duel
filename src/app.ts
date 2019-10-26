@@ -4,9 +4,11 @@ import ResizeObserver from "resize-observer-polyfill";
 
 import { Competitor, Status } from "./competitor";
 
+let debug: boolean = new URL(location.href).searchParams.get("debug") === "true";
+
 let initialNumCompetitors = parseFloat(new URL(location.href).searchParams.get("numCompetitors") || "2");
 if (isNaN(initialNumCompetitors)) {
-  initialNumCompetitors = 2;
+  initialNumCompetitors = debug ? 2 : 0;
 }
 
 let initialTimeLimitSeconds = parseFloat(new URL(location.href).searchParams.get("timeLimit") || "120");
@@ -14,7 +16,6 @@ if (isNaN(initialTimeLimitSeconds)) {
   initialTimeLimitSeconds = 120;
 }
 const initialTimeLimitMs = initialTimeLimitSeconds * 1000;
-
 declare global {
   interface Window {
     app: any
@@ -144,6 +145,8 @@ export class FMCDuelApp {
 
   async addCompetitor(): Promise<Competitor> {
     const competitor = new Competitor("Space", this.turnDone.bind(this, this.competitors.length));
+    await competitor.connect(debug);
+
     this.competitors.push(competitor);
     this.competitorsElem.appendChild(competitor.element);
 
