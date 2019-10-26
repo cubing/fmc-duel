@@ -41,6 +41,7 @@ export class Competitor {
   twisty: Twisty;
   bluetoothPuzzles: BluetoothPuzzle[] = [];
   private turnDoneHandler = this.turnDone.bind(this);
+  currentMove: BlockMove | null = null;
 
   constructor(private turnDoneKey: string, private turnDoneCallback: () => void) {
     experimentalShowJumpingFlash(false);
@@ -200,6 +201,7 @@ export class Competitor {
           // this.status = Status.Waiting
           console.log("removing listener", this.turnDoneKey)
           window.removeEventListener("keyup", this.turnDoneHandler);
+          this.currentMove = null;
           this.turnDoneCallback();
           break;
         // default:
@@ -296,8 +298,15 @@ export class Competitor {
       case Status.BeingScrambled:
         break;
       case Status.TakingTurn:
-        this.incrementMoveCounter();
-        this.turnDoneCallback();
+        if (this.currentMove === null) {
+          this.incrementMoveCounter();
+          this.currentMove = moveEvent.latestMove
+        } else {
+          // TODO: This assumes that we're only using outer slices.
+          if (this.currentMove.family !== moveEvent.latestMove.family) {
+            this.setLost();
+          }
+        }
         break;
       case Status.Waiting:
         this.setLost();
