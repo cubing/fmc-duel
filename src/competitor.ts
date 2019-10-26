@@ -4,7 +4,7 @@ import { BluetoothPuzzle, connect, debugKeyboardConnect, MoveEvent } from "cubin
 import { experimentalShowJumpingFlash } from "cubing/twisty";
 import { Puzzles, KPuzzle, EquivalentStates, Transformation } from "cubing/kpuzzle";
 import { formatTime } from "./stats";
-import { FMCDuelApp } from "./app";
+import { FMCDuelApp, debug } from "./app";
 
 const def = Puzzles["333"];
 
@@ -131,7 +131,9 @@ export class Competitor {
       case Status.Waiting:
       case Status.Scrambling:
         this.setStatus(Status.BeingScrambled);
-        this.twisty.experimentalGetPlayer().cube3DView.element.focus()
+        if (debug) {
+          this.twisty.experimentalGetPlayer().cube3DView.element.focus()
+        }
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -145,7 +147,9 @@ export class Competitor {
       case Status.BeingScrambled:
         this.startTimer();
         this.setStatus(Status.TakingTurn);
-        this.twisty.experimentalGetPlayer().cube3DView.element.focus()
+        if (debug) {
+          this.twisty.experimentalGetPlayer().cube3DView.element.focus()
+        }
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);

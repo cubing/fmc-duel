@@ -4,8 +4,8 @@ import ResizeObserver from "resize-observer-polyfill";
 
 import { Competitor, Status } from "./competitor";
 
-let debug: boolean = new URL(location.href).searchParams.get("debug") === "true";
-let useDifferentKeys: boolean = new URL(location.href).searchParams.get("userDifferentKeys") === "true";
+export const debug: boolean = new URL(location.href).searchParams.get("debug") === "true";
+let useDifferentKeys: boolean = new URL(location.href).searchParams.get("useDifferentKeys") === "true";
 
 let initialNumCompetitors = parseFloat(new URL(location.href).searchParams.get("numCompetitors"));
 if (isNaN(initialNumCompetitors)) {
