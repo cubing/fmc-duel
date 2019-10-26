@@ -323,17 +323,21 @@ export class Competitor {
           // TODO: This assumes that we're only using outer slices.
           if (this.currentMove.family !== moveEvent.latestMove.family) {
             this.setLost();
+            this.app.setLost(this.idx);
           }
         }
         if (this.isSolved()) {
           this.setWon();
+          this.app.setWon(this.idx);
         }
         break;
       case Status.Waiting:
         this.setLost();
+        this.app.setLost(this.idx);
         break;
       case Status.Scrambling:
         this.setTied();
+        this.app.setTied(this.idx);
         break;
       default:
         console.error(new Error(`Unexpected status! ${this.status}`));

@@ -145,6 +145,30 @@ export class FMCDuelApp {
     })
   }
 
+  setWon(idx: number): void {
+    for (let i = 0; i < this.competitors.length; i++) {
+      if (i !== idx) {
+        this.competitors[i].setLost();
+      }
+    }
+  }
+
+  setLost(idx: number): void {
+    for (let i = 0; i < this.competitors.length; i++) {
+      if (i !== idx) {
+        this.competitors[i].setWon();
+      }
+    }
+  }
+
+  setTied(idx: number): void {
+    for (let i = 0; i < this.competitors.length; i++) {
+      if (i !== idx) {
+        this.competitors[i].setTied();
+      }
+    }
+  }
+
   async addCompetitor(): Promise<Competitor> {
     const idx = this.competitors.length;
     const turnDoneKey = useDifferentKeys ? `Digit${idx + 1}` : "Space";
