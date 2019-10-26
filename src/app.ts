@@ -151,6 +151,7 @@ export class FMCDuelApp {
         this.competitors[i].setLost();
       }
     }
+    (document.querySelector("#reset") as HTMLButtonElement).focus();
   }
 
   setLost(idx: number): void {
@@ -159,6 +160,7 @@ export class FMCDuelApp {
         this.competitors[i].setWon();
       }
     }
+    (document.querySelector("#reset") as HTMLButtonElement).focus();
   }
 
   setTied(idx: number): void {
@@ -167,6 +169,7 @@ export class FMCDuelApp {
         this.competitors[i].setTied();
       }
     }
+    (document.querySelector("#reset") as HTMLButtonElement).focus();
   }
 
   async addCompetitor(): Promise<Competitor> {

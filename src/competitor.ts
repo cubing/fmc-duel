@@ -131,6 +131,7 @@ export class Competitor {
       case Status.Waiting:
       case Status.Scrambling:
         this.setStatus(Status.BeingScrambled);
+        this.twisty.experimentalGetPlayer().cube3DView.element.focus()
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -144,6 +145,7 @@ export class Competitor {
       case Status.BeingScrambled:
         this.startTimer();
         this.setStatus(Status.TakingTurn);
+        this.twisty.experimentalGetPlayer().cube3DView.element.focus()
         break;
       default:
         throw new Error(`Unexpected status! ${this.status}`);
@@ -205,6 +207,7 @@ export class Competitor {
       switch (this.status) {
         case Status.Scrambling:
         case Status.TakingTurn:
+          event.preventDefault();
           this.setStatus(Status.Waiting);
           console.log("removing listener", this.turnDoneKey)
           window.removeEventListener("keyup", this.turnDoneHandler);
