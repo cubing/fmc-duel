@@ -77,6 +77,8 @@ export class FMCDuelApp {
     this.phase = Phase.Scrambling;
     requestAnimationFrame(this.animFrame.bind(this));
     this.debugLog(0);
+
+    (document.querySelector("#start") as HTMLButtonElement).blur();
   }
 
   animFrame(): void {
