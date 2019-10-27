@@ -160,7 +160,7 @@ export class FMCDuelApp {
         this.competitors[i].setWon();
       }
     }
-    (document.querySelector("#reset") as HTMLButtonElement).focus();
+    // (document.querySelector("#reset") as HTMLButtonElement).focus();
   }
 
   setTied(idx: number): void {
