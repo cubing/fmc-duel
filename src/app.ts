@@ -44,7 +44,7 @@ export class FMCDuelApp {
     this.competitorsElem = this.element.querySelector("competitors");
     document.querySelector("#add-competitor").addEventListener("click", this.addCompetitor.bind(this));
     document.querySelector("#reset").addEventListener("click", this.reset.bind(this));
-    document.querySelector("#start").addEventListener("click", this.startRound.bind(this));
+    document.querySelector("#start").addEventListener("click", this.startMatch.bind(this));
 
     console.log(initialNumCompetitors);
     (async () => {
@@ -70,7 +70,7 @@ export class FMCDuelApp {
     return this.competitors[(this.currentCompetitorIdx + this.competitors.length + delta) % this.competitors.length];
   }
 
-  startRound(): void {
+  startMatch(): void {
     if (this.competitors.length < 2) {
       throw new Error("Need at least two competitors.");
     }
