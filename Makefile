@@ -1,5 +1,5 @@
-SFTP_PATH      = "towns.dreamhost.com:~/experiments.cubing.net/fmc-duel/"
-URL            = "https://experiments.cubing.net/fmc-duel/"
+SFTP_PATH      = "towns.dreamhost.com:~/fmc-duel.cubing.net/"
+URL            = "https://fmc-duel.cubing.net/"
 
 .PHONY: build
 build:
