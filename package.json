@@ -26,5 +26,8 @@
     "kpuzzle": "^0.9.18",
     "resize-observer-polyfill": "^1.5.1",
     "twisty": "^0.9.23"
+  },
+  "@cubing/deploy": {
+    "fmc-duel.cubing.net": {}
   }
 }
